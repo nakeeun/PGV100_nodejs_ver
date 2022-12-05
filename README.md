@@ -4,5 +4,5 @@
 
 Pepperl+Fuchs PGV100 nodejs version.
 
-#requirements npm modules
+# requirements npm modules
 - serialport
