@@ -30,10 +30,27 @@ comPort1.on('readable', function () {
         let buf = comPort1.read(21);
         if (JSON.stringify(buf) != JSON.stringify(prev_buf)) {
             console.log('read Data:', buf);
-            let x_pos_str = ((buf[2] & 0x07) << 21) | (buf[3] << 14) | (buf[4] << 7) | buf[5]; // unsigned x position
-            let y_pos_str = buf[6] << 7 | buf[7];  // signed y position
-            let ang_pos_str = buf[10] << 7 | buf[11]; // angle(theta)
-            let tag_num = (buf[14] << 21 | buf[15] << 14 | buf[16] << 7 | buf[17]); // tag number 
+            let x_pos_str = "";
+            let y_pos_str = "";
+            let ang_pos_str = "";
+            let tag_num = "";
+            let no_line = false;
+            if(buf[1] & 0x40 > 0x00) // qr code
+            {
+                x_pos_str = ((buf[2] << 21) & 0x07) | (buf[3] << 14) | (buf[4] << 7) | buf[5]; // unsigned 
+                y_pos_str = buf[6] << 7 | buf[7]; //signed - vertical distance from detected line
+                ang_pos_str = buf[10] << 7 | buf[11]; // angle 
+                tag_num = (buf[14] << 21 | buf[15] << 14 | buf[16] << 7 | buf[17]); //tag number
+                no_line = true;
+            }
+            else // line
+            {
+                x_pos_str = ((buf[2] & 0x07) << 21) | (buf[3] << 14) | (buf[4] << 7) | buf[5]; // unsigned 
+                y_pos_str = buf[6] << 7 | buf[7]; //signed - vertical distance from detected line
+                ang_pos_str = buf[10] << 7 | buf[11]; // angle 
+                tag_num = (buf[14] << 21 | buf[15] << 14 | buf[16] << 7 | buf[17]); //tag number
+                no_line = false;
+            }
             console.log(x_pos_str);
             console.log(y_pos_str);
             console.log(ang_pos_str);
