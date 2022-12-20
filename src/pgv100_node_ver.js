@@ -30,11 +30,11 @@ comPort1.on('readable', function () {
         let buf = comPort1.read(21);
         if (JSON.stringify(buf) != JSON.stringify(prev_buf)) {
             console.log('read Data:', buf);
-            let x_pos_str = "";
-            let y_pos_str = "";
-            let ang_pos_str = "";
-            let tag_num = "";
-            let no_line = false;
+            let x_pos_str = "";   // x position string
+            let y_pos_str = "";   // y position string
+            let ang_pos_str = ""; // angle position string
+            let tag_num = "";     // tag number
+            let no_line = false;  // no line : NL
             if(buf[1] & 0x40 > 0x00) // qr code
             {
                 x_pos_str = ((buf[2] << 21) & 0x07) | (buf[3] << 14) | (buf[4] << 7) | buf[5]; // unsigned 
@@ -55,7 +55,7 @@ comPort1.on('readable', function () {
             console.log(y_pos_str);
             console.log(ang_pos_str);
             prev_buf = buf;
-            let return_data = {xpos:x_pos_str, ypos:y_pos_str, angpos: ang_pos_str, tagnum:tag_num};
+            let return_data = {NL : no_line, xpos:x_pos_str, ypos:y_pos_str, angpos: ang_pos_str, tagnum:tag_num};
         }
     }
 });
